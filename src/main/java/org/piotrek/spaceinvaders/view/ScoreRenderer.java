@@ -1,18 +1,19 @@
-package org.piotrek.spaceinvaders;
+package org.piotrek.spaceinvaders.view;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class ScoreRenderer implements Renderer {
+public class ScoreRenderer implements View {
 
+	private static final String FONT_NAME = "VT323";
 	private static double FONT_SIZE = 16d;
 	private static double X = 5d;
 	private static double Y = 20d;
 	private static double MAX_WIDTH = 200d;
 
 	private int score = 0;
-	private Font font = new Font(FONT_SIZE);
+	private Font font = new Font(FONT_NAME, FONT_SIZE);
 
 	public int getScore() {
 		return this.score;
@@ -22,12 +23,9 @@ public class ScoreRenderer implements Renderer {
 		this.score = score;
 	}
 
-	public void draw(GraphicsContext graphicsContext) {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("SCORE: ");
-		stringBuilder.append(score);
-
-		String scoreText = stringBuilder.toString();
+	@Override
+	public void render(GraphicsContext graphicsContext) {
+		String scoreText = "SCORE: " + score;
 
 		graphicsContext.setFill(Color.LIME);
 		graphicsContext.setFont(font);
