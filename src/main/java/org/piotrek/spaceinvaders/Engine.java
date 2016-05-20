@@ -20,6 +20,71 @@ public class Engine {
 	private View backgroundView = new BackgroundView();
 	private View welcomeView = new WelcomeView();
 	private View playerView = new PlayerView(player);
+	private View pauseView = new PauseView();
+
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	public GameController getGameController() {
+		return gameController;
+	}
+
+	public void setGameController(GameController gameController) {
+		this.gameController = gameController;
+	}
+
+	public PlayerController getPlayerController() {
+		return playerController;
+	}
+
+	public void setPlayerController(PlayerController playerController) {
+		this.playerController = playerController;
+	}
+
+	public View getBackgroundView() {
+		return backgroundView;
+	}
+
+	public void setBackgroundView(View backgroundView) {
+		this.backgroundView = backgroundView;
+	}
+
+	public View getWelcomeView() {
+		return welcomeView;
+	}
+
+	public void setWelcomeView(View welcomeView) {
+		this.welcomeView = welcomeView;
+	}
+
+	public View getPlayerView() {
+		return playerView;
+	}
+
+	public void setPlayerView(View playerView) {
+		this.playerView = playerView;
+	}
+
+	public View getPauseView() {
+		return pauseView;
+	}
+
+	public void setPauseView(View pauseView) {
+		this.pauseView = pauseView;
+	}
 
 	public void update(long time) {
 		// noop
@@ -30,6 +95,10 @@ public class Engine {
 
 		if (game.isStarted()) {
 			playerView.render(graphicsContext);
+
+			if (game.isPaused()) {
+				pauseView.render(graphicsContext);
+			}
 		}
 		else {
 			welcomeView.render(graphicsContext);
@@ -41,7 +110,7 @@ public class Engine {
 
 		switch (keyCode) {
 			case SPACE:
-				gameController.startGame();
+				startGame();
 				break;
 
 			case Q:
@@ -49,26 +118,47 @@ public class Engine {
 				break;
 
 			case P:
-				gameController.togglePaused();
+				togglePaused();
 				break;
 
 			case A:
 			case LEFT:
-				playerController.movePlayerLeft();
+				movePlayerLeft();
 				break;
 
 			case D:
 			case RIGHT:
-				playerController.movePlayerRight();
+				movePlayerRight();
 				break;
 		}
 	}
 
 	public void handleKeyReleased(KeyEvent event) {
-		//
+		// noop
+	}
+
+	public void startGame() {
+		gameController.startGame();
+	}
+
+	public void togglePaused() {
+		gameController.togglePaused();
+	}
+
+	public void movePlayerLeft() {
+		if (game.isStarted() && !game.isPaused()) {
+			playerController.movePlayerLeft();
+		}
+	}
+
+	public void movePlayerRight() {
+		if (game.isStarted() && !game.isPaused()) {
+			playerController.movePlayerRight();
+		}
 	}
 
 	private void quitGame() {
 		System.exit(0);
 	}
+
 }

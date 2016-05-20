@@ -8,13 +8,12 @@ import org.piotrek.spaceinvaders.Config;
 
 public class WelcomeView implements View {
 
-	private static final String FONT_NAME = "VT323";
 	private static final double VERTICAL_SPACE = 36.0;
 
-	private static final Font titleFont = new Font(FONT_NAME, 72.0);
-	private static final Font menuFont = new Font(FONT_NAME, 36.0);
-	private static final Font footerFont = new Font(FONT_NAME, 28.0);
-	public static final double HALF_WINDOW_WIDTH = Config.WINDOW_WIDTH / 2.0;
+	private static final Font titleFont = new Font(Config.DEFAULT_FONT_NAME, 72.0);
+	private static final Font menuFont = new Font(Config.DEFAULT_FONT_NAME, 36.0);
+	private static final Font footerFont = new Font(Config.DEFAULT_FONT_NAME, 28.0);
+	private static final double HALF_WINDOW_WIDTH = Config.WINDOW_WIDTH / 2.0;
 
 	@Override
 	public void render(GraphicsContext graphicsContext) {
