@@ -3,11 +3,14 @@ package org.piotrek.spaceinvaders.controller;
 import org.piotrek.spaceinvaders.Config;
 import org.piotrek.spaceinvaders.model.Player;
 
+import javax.inject.Inject;
+
 public class PlayerController {
 	private static final double SINGLE_MOVE_DISTANCE = 10.0;
 
 	private Player player;
 
+	@Inject
 	public PlayerController(Player player) {
 		this.player = player;
 	}
