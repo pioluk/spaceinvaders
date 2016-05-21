@@ -14,7 +14,7 @@ public class MainApplication extends Application {
 	private Scene scene;
 	private GraphicsContext graphicsContext;
 
-	private Engine engine = new Engine();
+	private Engine engine;
 
 	private AnimationTimer createAnimationTimer(GraphicsContext graphicsContext) {
 		return new AnimationTimer() {
@@ -56,6 +56,8 @@ public class MainApplication extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		engine = DaggerEngineComponent.create().createEngine();
+
 		loadCustomFonts();
 		initializeUI(primaryStage);
 		attachEventHandlers();

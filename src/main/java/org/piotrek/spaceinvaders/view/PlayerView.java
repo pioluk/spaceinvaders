@@ -5,6 +5,8 @@ import javafx.scene.image.Image;
 import org.piotrek.spaceinvaders.Config;
 import org.piotrek.spaceinvaders.model.Player;
 
+import javax.inject.Inject;
+
 public class PlayerView implements View {
 
 	private static final Image playerImage = new Image(
@@ -17,6 +19,7 @@ public class PlayerView implements View {
 
 	private Player player;
 
+	@Inject
 	public PlayerView(Player player) {
 		this.player = player;
 	}

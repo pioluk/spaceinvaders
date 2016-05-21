@@ -9,80 +9,45 @@ import org.piotrek.spaceinvaders.model.Game;
 import org.piotrek.spaceinvaders.model.Player;
 import org.piotrek.spaceinvaders.view.*;
 
+import javax.inject.Inject;
+
 public class Engine {
 
-	private Game game = new Game();
-	private Player player = new Player();
+	// @Inject
+	Game game;
+	// @Inject
+	Player player;
 
-	private GameController gameController = new GameController(game);
-	private PlayerController playerController = new PlayerController(player);
+	// @Inject
+	GameController gameController;
+	// @Inject
+	PlayerController playerController;
 
-	private View backgroundView = new BackgroundView();
-	private View welcomeView = new WelcomeView();
-	private View playerView = new PlayerView(player);
-	private View pauseView = new PauseView();
+	// @Inject
+	BackgroundView backgroundView;
+	// @Inject
+	WelcomeView welcomeView;
+	// @Inject
+	PlayerView playerView;
+	// @Inject
+	PauseView pauseView;
 
-	public Game getGame() {
-		return game;
-	}
-
-	public void setGame(Game game) {
+	@Inject
+	public Engine(Game game,
+	              Player player,
+	              GameController gameController,
+	              PlayerController playerController,
+	              BackgroundView backgroundView,
+	              WelcomeView welcomeView,
+	              PlayerView playerView,
+	              PauseView pauseView) {
 		this.game = game;
-	}
-
-	public Player getPlayer() {
-		return player;
-	}
-
-	public void setPlayer(Player player) {
 		this.player = player;
-	}
-
-	public GameController getGameController() {
-		return gameController;
-	}
-
-	public void setGameController(GameController gameController) {
 		this.gameController = gameController;
-	}
-
-	public PlayerController getPlayerController() {
-		return playerController;
-	}
-
-	public void setPlayerController(PlayerController playerController) {
 		this.playerController = playerController;
-	}
-
-	public View getBackgroundView() {
-		return backgroundView;
-	}
-
-	public void setBackgroundView(View backgroundView) {
 		this.backgroundView = backgroundView;
-	}
-
-	public View getWelcomeView() {
-		return welcomeView;
-	}
-
-	public void setWelcomeView(View welcomeView) {
 		this.welcomeView = welcomeView;
-	}
-
-	public View getPlayerView() {
-		return playerView;
-	}
-
-	public void setPlayerView(View playerView) {
 		this.playerView = playerView;
-	}
-
-	public View getPauseView() {
-		return pauseView;
-	}
-
-	public void setPauseView(View pauseView) {
 		this.pauseView = pauseView;
 	}
 
