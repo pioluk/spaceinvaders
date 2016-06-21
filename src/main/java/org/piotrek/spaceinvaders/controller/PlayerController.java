@@ -12,12 +12,12 @@ public class PlayerController {
 		this.player = player;
 	}
 
-	public void movePlayerLeft() {
+	public void moveLeft() {
 		double x = Math.max(0, player.getX() - SINGLE_MOVE_DISTANCE);
 		player.setX(x);
 	}
 
-	public void movePlayerRight() {
+	public void moveRight() {
 		double x = Math.min(Config.WINDOW_WIDTH - Config.PLAYER_WIDTH, player.getX() + SINGLE_MOVE_DISTANCE);
 		player.setX(x);
 	}

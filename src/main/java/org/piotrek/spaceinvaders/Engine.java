@@ -3,24 +3,23 @@ package org.piotrek.spaceinvaders;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import org.piotrek.spaceinvaders.controller.BoardController;
 import org.piotrek.spaceinvaders.controller.GameController;
-import org.piotrek.spaceinvaders.controller.PlayerController;
-import org.piotrek.spaceinvaders.model.Game;
-import org.piotrek.spaceinvaders.model.Player;
+import org.piotrek.spaceinvaders.model.*;
 import org.piotrek.spaceinvaders.view.*;
 
 public class Engine {
 
 	private Game game = new Game();
-	private Player player = new Player();
+	private Board board = BoardFactory.create(1);
 
 	private GameController gameController = new GameController(game);
-	private PlayerController playerController = new PlayerController(player);
+	private BoardController boardController = new BoardController(board);
 
 	private View backgroundView = new BackgroundView();
 	private View welcomeView = new WelcomeView();
-	private View playerView = new PlayerView(player);
 	private View pauseView = new PauseView();
+	private View boardView = new BoardView(board);
 
 	public Game getGame() {
 		return game;
@@ -30,12 +29,12 @@ public class Engine {
 		this.game = game;
 	}
 
-	public Player getPlayer() {
-		return player;
+	public Board getBoard() {
+		return board;
 	}
 
-	public void setPlayer(Player player) {
-		this.player = player;
+	public void setBoard(Board board) {
+		this.board = board;
 	}
 
 	public GameController getGameController() {
@@ -46,12 +45,12 @@ public class Engine {
 		this.gameController = gameController;
 	}
 
-	public PlayerController getPlayerController() {
-		return playerController;
+	public BoardController getBoardController() {
+		return boardController;
 	}
 
-	public void setPlayerController(PlayerController playerController) {
-		this.playerController = playerController;
+	public void setBoardController(BoardController boardController) {
+		this.boardController = boardController;
 	}
 
 	public View getBackgroundView() {
@@ -70,14 +69,6 @@ public class Engine {
 		this.welcomeView = welcomeView;
 	}
 
-	public View getPlayerView() {
-		return playerView;
-	}
-
-	public void setPlayerView(View playerView) {
-		this.playerView = playerView;
-	}
-
 	public View getPauseView() {
 		return pauseView;
 	}
@@ -87,14 +78,16 @@ public class Engine {
 	}
 
 	public void update(long time) {
-		// noop
+		boardController.advanceProjectiles();
+		boardController.detectCollisions();
+		boardController.removeDeadInvaders();
 	}
 
 	public void render(GraphicsContext graphicsContext) {
 		backgroundView.render(graphicsContext);
 
 		if (game.isStarted()) {
-			playerView.render(graphicsContext);
+			boardView.render(graphicsContext);
 
 			if (game.isPaused()) {
 				pauseView.render(graphicsContext);
@@ -110,7 +103,7 @@ public class Engine {
 
 		switch (keyCode) {
 			case SPACE:
-				startGame();
+				handleSpacePressed();
 				break;
 
 			case Q:
@@ -133,6 +126,19 @@ public class Engine {
 		}
 	}
 
+	private void handleSpacePressed() {
+		if (!game.isStarted()) {
+			startGame();
+		}
+		else {
+			fireProjectile();
+		}
+	}
+
+	private void fireProjectile() {
+		boardController.fireProjectile();
+	}
+
 	public void handleKeyReleased(KeyEvent event) {
 		// noop
 	}
@@ -147,13 +153,13 @@ public class Engine {
 
 	public void movePlayerLeft() {
 		if (game.isStarted() && !game.isPaused()) {
-			playerController.movePlayerLeft();
+			boardController.movePlayerLeft();
 		}
 	}
 
 	public void movePlayerRight() {
 		if (game.isStarted() && !game.isPaused()) {
-			playerController.movePlayerRight();
+			boardController.movePlayerRight();
 		}
 	}
 
