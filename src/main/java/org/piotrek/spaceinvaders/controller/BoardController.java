@@ -2,10 +2,9 @@ package org.piotrek.spaceinvaders.controller;
 
 import javafx.application.Platform;
 import org.piotrek.spaceinvaders.Config;
-import org.piotrek.spaceinvaders.model.Board;
-import org.piotrek.spaceinvaders.model.Invader;
-import org.piotrek.spaceinvaders.model.Player;
-import org.piotrek.spaceinvaders.model.Projectile;
+import org.piotrek.spaceinvaders.model.*;
+
+import java.util.function.IntConsumer;
 
 public class BoardController {
 
@@ -13,6 +12,10 @@ public class BoardController {
 	private PlayerController playerController;
 
 	public BoardController(Board board) {
+		setBoard(board);
+	}
+
+	public void setBoard(Board board) {
 		this.board = board;
 		playerController = new PlayerController(board.getPlayer());
 	}
@@ -73,5 +76,21 @@ public class BoardController {
 
 	public void removeDeadInvaders() {
 		board.getInvaders().removeIf(invader -> invader.isDead());
+	}
+
+	public void forEachDeadInvader(IntConsumer callback) {
+		int points = board.getInvaders().stream()
+			.filter(invader -> invader.isDead())
+			.mapToInt(Invader::getPoints)
+			.sum();
+		callback.accept(points);
+	}
+
+	public void moveInvaders(long time, int level) {
+		double delta = Math.sin(time / (16 * 10e7));
+		for (Invader invader : board.getInvaders()) {
+			invader.setX(invader.getX() + delta);
+			invader.setY(invader.getY() + 0.1 * level);
+		}
 	}
 }

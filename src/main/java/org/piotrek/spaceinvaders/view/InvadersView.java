@@ -2,7 +2,6 @@ package org.piotrek.spaceinvaders.view;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import org.piotrek.spaceinvaders.Config;
 import org.piotrek.spaceinvaders.model.Invader;
 
@@ -18,7 +17,7 @@ public class InvadersView implements View {
 		true
 	);
 
-	private List<Invader> invaders;
+	private List<Invader>  invaders;
 
 	public InvadersView(List<Invader> invaders) {
 		this.invaders = invaders;

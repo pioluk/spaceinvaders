@@ -19,7 +19,7 @@ public class Level1Board extends Board {
 			double x = Config.WINDOW_WIDTH / 2.0 - COLUMNS / 2.0 * (Config.INVADER_WIDTH + Config.INVADER_MARGIN);
 
 			for (int j = 0; j < COLUMNS; ++j) {
-				Invader invader = new Invader();
+				Invader invader = InvaderFactory.create(InvaderType.EASY);
 				invader.setX(x);
 				invader.setY(y);
 				invaders.add(invader);

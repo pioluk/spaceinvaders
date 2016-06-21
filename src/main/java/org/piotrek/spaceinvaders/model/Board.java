@@ -17,7 +17,7 @@ public abstract class Board {
 		this.player = player;
 	}
 
-	public List<Invader> getInvaders() {
+	public List<Invader>getInvaders() {
 		return invaders;
 	}
 

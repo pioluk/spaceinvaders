@@ -8,10 +8,14 @@ import org.piotrek.spaceinvaders.controller.GameController;
 import org.piotrek.spaceinvaders.model.*;
 import org.piotrek.spaceinvaders.view.*;
 
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class Engine {
 
 	private Game game = new Game();
-	private Board board = BoardFactory.create(1);
+	private Board board = BoardFactory.create(game.getLevel());
 
 	private GameController gameController = new GameController(game);
 	private BoardController boardController = new BoardController(board);
@@ -19,7 +23,11 @@ public class Engine {
 	private View backgroundView = new BackgroundView();
 	private View welcomeView = new WelcomeView();
 	private View pauseView = new PauseView();
-	private View boardView = new BoardView(board);
+	private BoardView boardView = new BoardView(board);
+	private ScoreView scoreView = new ScoreView();
+	private ChangingLevelView changingLevelView = new ChangingLevelView();
+	private View gameWonView = new GameWonView();
+	private View gameOverView = new GameOverView();
 
 	public Game getGame() {
 		return game;
@@ -78,16 +86,89 @@ public class Engine {
 	}
 
 	public void update(long time) {
-		boardController.advanceProjectiles();
-		boardController.detectCollisions();
-		boardController.removeDeadInvaders();
+		if (game.isStarted() && !game.isChangingLevel() && !game.isWon() && !game.isOver() && !game.isPaused()) {
+			scoreView.setScore(game.getScore());
+
+			boardController.advanceProjectiles();
+			boardController.detectCollisions();
+			boardController.forEachDeadInvader(points -> gameController.addToScore(points));
+			boardController.removeDeadInvaders();
+			boardController.moveInvaders(time, game.getLevel());
+			checkIfLevelCompleted();
+			checkIfGameOver();
+		}
+	}
+
+	private void checkIfGameOver() {
+		List<Invader> invaders = board.getInvaders();
+		Player player = board.getPlayer();
+
+		for (Invader invader : invaders) {
+			if (invader.getY() + Config.INVADER_HEIGHT >= player.getY()) {
+				gameOver();
+				break;
+			}
+		}
+	}
+
+	private void gameOver() {
+		game.setOver(true);
+	}
+
+	private void checkIfLevelCompleted() {
+		if (board.getInvaders().size() > 0) {
+			return;
+		}
+
+		if (game.getLevel() == Config.MAX_LEVEL) {
+			gameWon();
+			return;
+		}
+
+		game.setChangingLevel(true);
+
+		game.increaseLevel();
+		changingLevelView.setLevel(game.getLevel());
+
+		Timer startNewLevel = new Timer();
+		startNewLevel.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				completeChangingLevels();
+			}
+		}, 2500);
+	}
+
+	private void gameWon() {
+		game.setWon(true);
+	}
+
+	public void completeChangingLevels() {
+		game.setChangingLevel(false);
+		changeLevel();
+	}
+
+	private void changeLevel() {
+		board = BoardFactory.create(game.getLevel());
+		boardController.setBoard(board);
+		boardView.setBoard(board);
 	}
 
 	public void render(GraphicsContext graphicsContext) {
 		backgroundView.render(graphicsContext);
 
-		if (game.isStarted()) {
+		if (game.isChangingLevel()) {
+			changingLevelView.render(graphicsContext);
+		}
+		else if (game.isOver()) {
+			gameOverView.render(graphicsContext);
+		}
+		else if (game.isWon()) {
+			gameWonView.render(graphicsContext);
+		}
+		else if (game.isStarted()) {
 			boardView.render(graphicsContext);
+			scoreView.render(graphicsContext);
 
 			if (game.isPaused()) {
 				pauseView.render(graphicsContext);
@@ -137,10 +218,6 @@ public class Engine {
 
 	private void fireProjectile() {
 		boardController.fireProjectile();
-	}
-
-	public void handleKeyReleased(KeyEvent event) {
-		// noop
 	}
 
 	public void startGame() {

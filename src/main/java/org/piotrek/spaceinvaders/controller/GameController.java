@@ -17,4 +17,8 @@ public class GameController {
 	public void togglePaused() {
 		game.setPaused(!game.isPaused());
 	}
+
+	public void addToScore(int points) {
+		game.setScore(game.getScore() + points);
+	}
 }

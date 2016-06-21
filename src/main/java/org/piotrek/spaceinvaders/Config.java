@@ -18,4 +18,6 @@ public class Config {
 	public static final double PROJECTILE_WIDTH = 3.0;
 	public static final double PROJECTILE_HEIGHT = 6.0;
 
+	public static final int MAX_LEVEL = 2;
+
 }

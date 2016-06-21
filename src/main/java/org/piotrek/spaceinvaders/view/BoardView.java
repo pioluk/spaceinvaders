@@ -12,6 +12,10 @@ public class BoardView implements View {
 	private ProjectilesView projectilesView;
 
 	public BoardView(Board board) {
+		setBoard(board);
+	}
+
+	public void setBoard(Board board) {
 		this.board = board;
 		this.playerView = new PlayerView(board.getPlayer());
 		this.invadersView = new InvadersView(board.getInvaders());

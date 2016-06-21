@@ -28,7 +28,6 @@ public class MainApplication extends Application {
 
 	private void attachEventHandlers() {
 		scene.setOnKeyPressed(engine::handleKeyPressed);
-		scene.setOnKeyReleased(engine::handleKeyReleased);
 	}
 
 	private void loadCustomFonts() {
