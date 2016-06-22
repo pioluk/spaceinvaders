@@ -1,18 +1,30 @@
 package org.piotrek.spaceinvaders;
 
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.piotrek.spaceinvaders.controller.BoardController;
 import org.piotrek.spaceinvaders.controller.GameController;
+import org.piotrek.spaceinvaders.dao.ScoreDaoImpl;
 import org.piotrek.spaceinvaders.model.*;
 import org.piotrek.spaceinvaders.view.*;
 
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Engine {
+
+	private static final String DATABASE_PATH = "spaceinvaders.db";
+	private Instant startGameTime;
+	private Instant endGameTime;
 
 	private Game game = new Game();
 	private Board board = BoardFactory.create(game.getLevel());
@@ -28,6 +40,9 @@ public class Engine {
 	private ChangingLevelView changingLevelView = new ChangingLevelView();
 	private View gameWonView = new GameWonView();
 	private View gameOverView = new GameOverView();
+	private LeaderboardView leaderboardView = new LeaderboardView();
+
+	private boolean showingLeaderboard = false;
 
 	public Game getGame() {
 		return game;
@@ -113,6 +128,7 @@ public class Engine {
 
 	private void gameOver() {
 		game.setOver(true);
+		finishGame();
 	}
 
 	private void checkIfLevelCompleted() {
@@ -141,6 +157,7 @@ public class Engine {
 
 	private void gameWon() {
 		game.setWon(true);
+		finishGame();
 	}
 
 	public void completeChangingLevels() {
@@ -157,7 +174,10 @@ public class Engine {
 	public void render(GraphicsContext graphicsContext) {
 		backgroundView.render(graphicsContext);
 
-		if (game.isChangingLevel()) {
+		if (showingLeaderboard) {
+			leaderboardView.render(graphicsContext);
+		}
+		else if (game.isChangingLevel()) {
 			changingLevelView.render(graphicsContext);
 		}
 		else if (game.isOver()) {
@@ -204,6 +224,27 @@ public class Engine {
 			case RIGHT:
 				movePlayerRight();
 				break;
+
+			case L:
+				toggleLeaderboard();
+				break;
+		}
+	}
+
+	private void toggleLeaderboard() {
+		showingLeaderboard = !showingLeaderboard;
+
+		if (!showingLeaderboard) return;
+
+		try {
+			Connection connection = DatabaseManager.getConnection(DATABASE_PATH);
+			ScoreDaoImpl scoreDao = new ScoreDaoImpl(connection);
+			List<Score> highscores = scoreDao.findAll().stream().limit(8).collect(Collectors.toList());
+			leaderboardView.setHighscores(highscores);
+			connection.close();
+		} catch (Exception e) {
+			showingLeaderboard = false;
+			showErrorDialog(e);
 		}
 	}
 
@@ -222,6 +263,56 @@ public class Engine {
 
 	public void startGame() {
 		gameController.startGame();
+		startGameTime = Instant.now();
+	}
+
+	public void finishGame() {
+		Platform.runLater(() -> {
+			try {
+				saveScore();
+			}
+			catch (Exception e) {
+				showErrorDialog(e);
+			}
+		});
+	}
+
+	private void showErrorDialog(Exception e) {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText("An error occured");
+		alert.setContentText(e.getMessage());
+		alert.showAndWait();
+	}
+
+	private void saveScore() throws SQLException, ClassNotFoundException {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("YYY-MM-dd HH:MM:ss");
+		Date now = new Date();
+		endGameTime = now.toInstant();
+		Duration duration = Duration.between(startGameTime, endGameTime);
+
+		System.out.println(dateFormat.format(now));
+
+		Connection connection = DatabaseManager.getConnection(DATABASE_PATH);
+		ScoreDaoImpl scoreDao = new ScoreDaoImpl(connection);
+
+		String name = askName();
+		Score score = new Score();
+		score.setName(name);
+		score.setScore(game.getScore());
+		score.setFinishTime(dateFormat.format(now));
+		score.setGameDuration(duration.getSeconds());
+
+		scoreDao.save(score);
+	}
+
+
+	private String askName() {
+		TextInputDialog dialog = new TextInputDialog();
+		dialog.initOwner(null);
+		dialog.setTitle("What's your name?");
+		Optional<String> result = dialog.showAndWait();
+		return result.orElse("John Doe");
 	}
 
 	public void togglePaused() {

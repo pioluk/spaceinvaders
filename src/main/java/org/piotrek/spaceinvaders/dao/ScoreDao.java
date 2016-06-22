@@ -1,7 +1,11 @@
 package org.piotrek.spaceinvaders.dao;
 
-/**
- * Created by asus on 21.06.16.
- */
-public class ScoreDao {
+import org.piotrek.spaceinvaders.model.Score;
+
+import java.sql.SQLException;
+import java.util.List;
+
+public interface ScoreDao {
+	List<Score> findAll() throws SQLException;
+	void save(Score score) throws SQLException;
 }
