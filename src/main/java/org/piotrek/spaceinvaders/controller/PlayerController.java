@@ -22,4 +22,9 @@ public class PlayerController {
 		player.setX(x);
 	}
 
+	public double getMoveDistance()
+	{
+		return SINGLE_MOVE_DISTANCE;
+	}
+
 }
