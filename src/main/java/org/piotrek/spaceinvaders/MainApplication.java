@@ -55,6 +55,11 @@ public class MainApplication extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+
+		if (primaryStage != null) {
+			primaryStage.close();
+		}
+
 		loadCustomFonts();
 		initializeUI(primaryStage);
 		attachEventHandlers();

@@ -15,6 +15,8 @@ public class BoardController {
 		setBoard(board);
 	}
 
+	public void setPlayerController(PlayerController playerController) { this.playerController = playerController; }
+
 	public void setBoard(Board board) {
 		this.board = board;
 		playerController = new PlayerController(board.getPlayer());

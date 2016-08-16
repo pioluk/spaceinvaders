@@ -8,6 +8,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.piotrek.spaceinvaders.controller.BoardController;
 import org.piotrek.spaceinvaders.controller.GameController;
+import org.piotrek.spaceinvaders.controller.PlayerController;
 import org.piotrek.spaceinvaders.dao.ScoreDaoImpl;
 import org.piotrek.spaceinvaders.model.*;
 import org.piotrek.spaceinvaders.view.*;
@@ -75,6 +76,8 @@ public class Engine {
 	public void setBoardController(BoardController boardController) {
 		this.boardController = boardController;
 	}
+
+	public void setPlayerController(PlayerController playerController) { this.boardController.setPlayerController(playerController);};
 
 	public View getBackgroundView() {
 		return backgroundView;
@@ -331,7 +334,7 @@ public class Engine {
 		}
 	}
 
-	private void quitGame() {
+	public void quitGame() {
 		System.exit(0);
 	}
 
