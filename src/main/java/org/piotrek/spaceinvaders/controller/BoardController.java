@@ -2,7 +2,10 @@ package org.piotrek.spaceinvaders.controller;
 
 import javafx.application.Platform;
 import org.piotrek.spaceinvaders.Config;
-import org.piotrek.spaceinvaders.model.*;
+import org.piotrek.spaceinvaders.model.Board;
+import org.piotrek.spaceinvaders.model.Invader;
+import org.piotrek.spaceinvaders.model.Player;
+import org.piotrek.spaceinvaders.model.Projectile;
 
 import java.util.function.IntConsumer;
 
@@ -67,10 +70,12 @@ public class BoardController {
 				if (projectileX >= invaderX && projectileX - Config.PROJECTILE_WIDTH <= invaderX + Config.INVADER_WIDTH &&
 					projectileY >= invaderY && projectileY <= invaderY + Config.INVADER_HEIGHT &&
 					!invader.isDead()) {
+
 					Platform.runLater(() -> {
 						board.removeProjectile(projectile);
 						invader.decreaseHP();
 					});
+
 				}
 			}
 		}

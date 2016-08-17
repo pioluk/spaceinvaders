@@ -1,5 +1,6 @@
 package org.piotrek.spaceinvaders.controller;
 
+import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,6 +8,7 @@ import org.piotrek.spaceinvaders.Config;
 import org.piotrek.spaceinvaders.model.*;
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -113,6 +115,18 @@ public class BoardControllerTest {
 
 	*/
 
+
+    private void waitForThread() throws InterruptedException {
+
+
+            Semaphore semaphore = new Semaphore(0);
+            Platform.runLater(() -> semaphore.release());
+            semaphore.acquire();
+
+
+
+    }
+
     @Test
     public void detectCollisionsTest1() throws  Exception {
 
@@ -133,8 +147,10 @@ public class BoardControllerTest {
         board.setInvaders(invanders);
 
         boardController.detectCollisions();
+        waitForThread();
 
-        Thread.sleep(2000); //TODO not correct, think about it later
+
+
 
         assertTrue(board.getProjectiles().isEmpty());
     }
@@ -160,8 +176,8 @@ public class BoardControllerTest {
         board.setInvaders(invanders);
 
         boardController.detectCollisions();
+        waitForThread();
 
-        Thread.sleep(2000); //TODO not correct, think about it later
 
         assertThat(board.getProjectiles().size(),equalTo(1));
     }
