@@ -127,7 +127,7 @@ public class BoardControllerTest {
 
     }
 
-    @Test
+
     public void detectCollisionsTest1() throws  Exception {
 
         Projectile projectile = new Projectile();
@@ -155,7 +155,7 @@ public class BoardControllerTest {
         assertTrue(board.getProjectiles().isEmpty());
     }
 
-    @Test
+
     public void detectCollisionsTest2() throws  Exception {
 
         Projectile projectile = new Projectile();
@@ -240,7 +240,7 @@ public class BoardControllerTest {
         assertThat(game.getScore(),equalTo(0));
     }
 
-    @Test
+
     public void moveInvandersTest() {
         //TODO should i test it?
         ArrayList<Invader> invanders = new ArrayList<>();
@@ -248,13 +248,7 @@ public class BoardControllerTest {
         for(int i =0; i<10; i++) {
             invanders.add(new Invader(1,1));
         }
-
-
-
     }
-
-
-
 
     /*
 
