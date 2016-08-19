@@ -95,28 +95,33 @@ public class BoardControllerTest {
 
     }
 
-    @Test
-    public void advanceProjecties() {
-        //TODO finish this
-    }
-
-
-    /*
-    public void advanceProjectiles() {
-		for (Projectile projectile : board.getProjectiles()) {
-			projectile.advance();
-			if (projectile.getY() < 0) {
-				Platform.runLater(() -> board.removeProjectile(projectile));
-			}
-		}
-	}
-
-	*/
-
     private void waitForThread() throws InterruptedException {
         Semaphore semaphore = new Semaphore(0);
         Platform.runLater(() -> semaphore.release());
         semaphore.acquire();
+    }
+
+    @Test
+    public void advanceProjecties() throws InterruptedException {
+
+        Projectile projectile1 = new Projectile();
+        Projectile projectile2 = new Projectile();
+        Projectile projectile3 = new Projectile();
+
+        projectile1.setY(10);
+        projectile2.setY(1);
+        projectile3.setY(-1);
+
+        board.addProjectile(projectile1);
+        board.addProjectile(projectile2);
+        board.addProjectile(projectile3);
+
+        new JFXPanel();
+        boardController.advanceProjectiles();
+
+        waitForThread();
+
+        assertThat(board.getProjectiles().size(),equalTo(1));
     }
 
     @Test
@@ -130,7 +135,7 @@ public class BoardControllerTest {
 
         Invader invader = new Invader(1,1);
         invader.setX(2.0);
-        invader.setX(2.0);
+        invader.setY(2.0);
         ArrayList<Invader> invanders = new ArrayList<>();
         invanders.add(invader);
 
@@ -144,7 +149,7 @@ public class BoardControllerTest {
         assertTrue(board.getProjectiles().isEmpty());
     }
 
-
+    @Test
     public void detectCollisionsTest2() throws  Exception {
 
         Projectile projectile = new Projectile();
@@ -156,7 +161,7 @@ public class BoardControllerTest {
 
         Invader invader = new Invader(1,1);
         invader.setX(2.0);
-        invader.setX(2.0);
+        invader.setY(2.0);
         ArrayList<Invader> invanders = new ArrayList<>();
         invanders.add(invader);
 
