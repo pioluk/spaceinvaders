@@ -2,7 +2,6 @@ package org.piotrek.spaceinvaders.dao;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.piotrek.spaceinvaders.model.Score;
 
@@ -14,7 +13,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,41 +25,33 @@ import static org.mockito.Mockito.when;
  */
 public class DaoTest {
 
-    @Mock
-    DataSource mockDataSource;
-    @Mock
-    Connection mockConn = Mockito.mock(Connection.class);
-    @Mock
-    Statement mockStatement = Mockito.mock(Statement.class);
-    @Mock
-    ResultSet mockResultSet = mock(ResultSet.class);
 
+    DataSource mockDataSource;
+    Connection mockConn;
+    Statement mockStatement;
+    ResultSet mockResultSet;
 
     @Before
-    public void setUp() throws SQLException {
-
-
-
+    public void init() {
+        mockDataSource = mock(DataSource.class);
+        mockConn = mock(Connection.class);
+        mockStatement = mock(Statement.class);
+        mockResultSet = mock(ResultSet.class);
     }
 
+
+
     @Test
-    public void getAllTest() throws SQLException {
-
-
-        ResultSet mockResultSet = mock(ResultSet.class);
+    public void getAllTest() throws SQLException  {
 
         when(mockConn.createStatement()).thenReturn(mockStatement);
         when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
-
-        when(mockResultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);//, Boolean.TRUE, Boolean.FALSE);
+        when(mockResultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
 
         Mockito.when(mockResultSet.getString("name")).thenReturn("Artur");
         Mockito.when(mockResultSet.getInt("score")).thenReturn(999);
         Mockito.when(mockResultSet.getString("finishTime")).thenReturn("2016-08-08 16:08:23");
         Mockito.when(mockResultSet.getLong("gameDuration")).thenReturn(21L);
-
-
-        ScoreDao dao = new ScoreDaoImpl(mockConn);
 
         Score score = new Score();
         score.name = "Artur";
@@ -69,7 +62,8 @@ public class DaoTest {
         List<Score> list = new ArrayList<>();
         list.add(score);
 
-        List<Score> scoreList = scoreList = dao.findAll();
+        ScoreDao dao = new ScoreDaoImpl(mockConn);
+        List<Score> scoreList = dao.findAll();
 
         for(int i =0; i<scoreList.size(); i++)
         {
@@ -81,12 +75,10 @@ public class DaoTest {
     }
 
     @Test
-    public void saveTest() throws SQLException {
-
-        ResultSet mockResultSet = mock(ResultSet.class);
-
+    public void saveTest() throws SQLException, ClassNotFoundException {
         when(mockConn.createStatement()).thenReturn(mockStatement);
         when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
 
         ScoreDao dao = new ScoreDaoImpl(mockConn);
 
@@ -97,10 +89,27 @@ public class DaoTest {
         score.score = 999;
 
         dao.save(score);
-        //TODO how i can test database?
+
+        List<Score> scores = new ArrayList<>();
+
+        while (mockResultSet.next()) {
+            Score scoreTemp = new Score();
+            scoreTemp.setName(mockResultSet.getString("name"));
+            scoreTemp.setScore(mockResultSet.getInt("score"));
+            scoreTemp.setFinishTime(mockResultSet.getString("finishTime"));
+            scoreTemp.setGameDuration(mockResultSet.getLong("gameDuration"));
+
+            scores.add(score);
+        }
+
+        assertThat(score.getName(),equalTo(scores.get(0).getName()));
+        assertThat(score.getFinishTime(),equalTo(scores.get(0).getFinishTime()));
+        assertThat(score.getGameDuration(),equalTo(scores.get(0).getGameDuration()));
+        assertThat(score.getScore(),equalTo(scores.get(0).getScore()));
     }
 
 
 
 
 }
+

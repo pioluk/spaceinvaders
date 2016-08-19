@@ -24,8 +24,6 @@ public class ScoreDaoImpl implements ScoreDao {
 
 		ResultSet resultSet = statement.executeQuery(sql);
 
-
-
 		List<Score> scores = new ArrayList<>();
 
 		while (resultSet.next()) {
@@ -39,7 +37,6 @@ public class ScoreDaoImpl implements ScoreDao {
 		}
 
 		resultSet.close();
-
 		statement.close();
 
 		return scores;

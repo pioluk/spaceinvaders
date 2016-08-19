@@ -21,7 +21,6 @@ public class BoardControllerTest {
 
     private Board board;
     private BoardController boardController;
-    private PlayerController playerController;
 
     @Before
     public void init() {
@@ -29,19 +28,18 @@ public class BoardControllerTest {
         board = BoardFactory.create(game.getLevel());
         board.setPlayer(new Player());
         boardController = new BoardController(board);
-        playerController = new PlayerController(board.getPlayer());
     }
 
     @Test
-    public void movePlayerLeft1() {
+    public void movePlayerLeft() {
         double xPosBefore = board.getPlayer().getX();
         boardController.movePlayerLeft();
         double xPosAfter = board.getPlayer().getX();
-        assertThat(xPosAfter,equalTo(xPosBefore - playerController.getMoveDistance()));
+        assertThat(xPosAfter,equalTo(xPosBefore - Config.SINGLE_MOVE_DISTANCE_FOR_PLAYER));
     }
 
     @Test
-    public void movePlayerLeft2() {
+    public void movePlayerLeftAtLeftBorder() {
         board.getPlayer().setX(0);
         boardController.movePlayerLeft();
         Double xPosAfter = board.getPlayer().getX();
@@ -49,7 +47,7 @@ public class BoardControllerTest {
     }
 
     @Test
-    public void movePlayerLeft3() {
+    public void movePlayerLeftAtOuside() {
         board.getPlayer().setX(-20);
         boardController.movePlayerLeft();
         Double xPosAfter = board.getPlayer().getX();
@@ -57,15 +55,15 @@ public class BoardControllerTest {
     }
 
     @Test
-    public void movePlayerRight1() {
+    public void movePlayerRight() {
         double xPosBefore = board.getPlayer().getX();
         boardController.movePlayerRight();
         Double xPosAfter = board.getPlayer().getX();
-        assertThat(xPosAfter,equalTo(xPosBefore + playerController.getMoveDistance()));
+        assertThat(xPosAfter,equalTo(xPosBefore + Config.SINGLE_MOVE_DISTANCE_FOR_PLAYER));
     }
 
     @Test
-    public void movePlayerRight2() {
+    public void movePlayerRightAtRightBorder() {
         board.getPlayer().setX(Config.WINDOW_WIDTH);
         boardController.movePlayerRight();
         Double xPosAfter = board.getPlayer().getX();
@@ -73,7 +71,7 @@ public class BoardControllerTest {
     }
 
     @Test
-    public void movePlayerRight3() {
+    public void movePlayerRightAtOutside() {
         board.getPlayer().setX(Config.WINDOW_WIDTH+200);
         boardController.movePlayerRight();
         Double xPosAfter = board.getPlayer().getX();
@@ -115,19 +113,13 @@ public class BoardControllerTest {
 
 	*/
 
-
     private void waitForThread() throws InterruptedException {
-
-
-            Semaphore semaphore = new Semaphore(0);
-            Platform.runLater(() -> semaphore.release());
-            semaphore.acquire();
-
-
-
+        Semaphore semaphore = new Semaphore(0);
+        Platform.runLater(() -> semaphore.release());
+        semaphore.acquire();
     }
 
-
+    @Test
     public void detectCollisionsTest1() throws  Exception {
 
         Projectile projectile = new Projectile();
@@ -148,9 +140,6 @@ public class BoardControllerTest {
 
         boardController.detectCollisions();
         waitForThread();
-
-
-
 
         assertTrue(board.getProjectiles().isEmpty());
     }
@@ -183,7 +172,7 @@ public class BoardControllerTest {
     }
 
     @Test
-    public void renoveDeadInvandersTest() {
+    public void removeDeadInvadersTest() {
 
         ArrayList<Invader> invanders = new ArrayList<>();
         for(int i =0; i<10; i++) {
@@ -202,7 +191,7 @@ public class BoardControllerTest {
     }
 
     @Test
-    public void forEachDeadInvander1() {
+    public void forEachDeadInvader() {
         ArrayList<Invader> invanders = new ArrayList<>();
 
         for(int i =0; i<10; i++) {
@@ -224,7 +213,7 @@ public class BoardControllerTest {
     }
 
     @Test
-    public void forEachDeadInvander2() {
+    public void forEachDeadInvaderWithoutDeadInvader() {
         ArrayList<Invader> invanders = new ArrayList<>();
 
         for(int i =0; i<10; i++) {
@@ -239,30 +228,5 @@ public class BoardControllerTest {
 
         assertThat(game.getScore(),equalTo(0));
     }
-
-
-    public void moveInvandersTest() {
-        //TODO should i test it?
-        ArrayList<Invader> invanders = new ArrayList<>();
-
-        for(int i =0; i<10; i++) {
-            invanders.add(new Invader(1,1));
-        }
-    }
-
-    /*
-
-
-
-	public void moveInvaders(long time, int level) {
-		double delta = Math.sin(time / (16 * 10e7));
-		for (Invader invader : board.getInvaders()) {
-			invader.setX(invader.getX() + delta);
-			invader.setY(invader.getY() + 0.1 * level);
-		}
-	}
-}
-     */
-
 }
 

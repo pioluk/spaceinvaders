@@ -18,7 +18,9 @@ public class BoardController {
 		setBoard(board);
 	}
 
-	public void setPlayerController(PlayerController playerController) { this.playerController = playerController; }
+	public void setPlayerController(PlayerController playerController) {
+		this.playerController = playerController;
+	}
 
 	public void setBoard(Board board) {
 		this.board = board;
@@ -75,7 +77,6 @@ public class BoardController {
 						board.removeProjectile(projectile);
 						invader.decreaseHP();
 					});
-
 				}
 			}
 		}
