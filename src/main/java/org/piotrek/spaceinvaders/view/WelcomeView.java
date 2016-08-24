@@ -42,8 +42,8 @@ public class WelcomeView implements View {
 		graphicsContext.fillText("L - show leaderboard", HALF_WINDOW_WIDTH, startHeight);
 		startHeight += VERTICAL_SPACE;
 		graphicsContext.fillText("P - pause / unpause", HALF_WINDOW_WIDTH, startHeight);
-		startHeight += VERTICAL_SPACE;
-		graphicsContext.fillText("R - restart", HALF_WINDOW_WIDTH, startHeight);
+		// startHeight += VERTICAL_SPACE;
+		// graphicsContext.fillText("R - restart", HALF_WINDOW_WIDTH, startHeight);
 		startHeight += VERTICAL_SPACE;
 		graphicsContext.fillText("Q - quit", HALF_WINDOW_WIDTH, startHeight);
 	}
@@ -51,7 +51,7 @@ public class WelcomeView implements View {
 	private void drawFooter(GraphicsContext graphicsContext) {
 		double startHeight = Config.WINDOW_HEIGHT - VERTICAL_SPACE;
 		graphicsContext.setFont(footerFont);
-		graphicsContext.fillText("2016 - Piotr Łukomiak & Artur Mishustin", HALF_WINDOW_WIDTH, startHeight);
+		graphicsContext.fillText("2016 - Piotr Łukomiak", HALF_WINDOW_WIDTH, startHeight);
 	}
 
 }

@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.piotrek.spaceinvaders.Config;
 import org.piotrek.spaceinvaders.model.Player;
 
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.*;
 
 public class PlayerControllerTest {
@@ -23,7 +22,7 @@ public class PlayerControllerTest {
 	public void shouldMovePlayerLeft() {
 		double x = player.getX();
 
-		playerController.movePlayerLeft();
+		playerController.moveLeft();
 		assertThat(player.getX()).isLessThan(x);
 	}
 
@@ -31,14 +30,14 @@ public class PlayerControllerTest {
 	public void shouldMovePlayerRight() {
 		double x = player.getX();
 
-		playerController.movePlayerRight();
+		playerController.moveRight();
 		assertThat(player.getX()).isGreaterThan(x);
 	}
 
 	@Test
 	public void shouldNotAllowPlayerToExceedLeftWindowBound() {
 		for (int i = 0; i < 100; ++i) {
-			playerController.movePlayerLeft();
+			playerController.moveLeft();
 		}
 
 		assertThat(player.getX()).isGreaterThanOrEqualTo(0.0);
@@ -47,7 +46,7 @@ public class PlayerControllerTest {
 	@Test
 	public void shouldNotAllowPlayerToExceedRightWindowBound() {
 		for (int i = 0; i < 100; ++i) {
-			playerController.movePlayerLeft();
+			playerController.moveRight();
 		}
 
 		assertThat(player.getX()).isLessThanOrEqualTo(Config.WINDOW_WIDTH - Config.PLAYER_WIDTH);

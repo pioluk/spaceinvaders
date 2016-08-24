@@ -28,7 +28,6 @@ public class MainApplication extends Application {
 
 	private void attachEventHandlers() {
 		scene.setOnKeyPressed(engine::handleKeyPressed);
-		scene.setOnKeyReleased(engine::handleKeyReleased);
 	}
 
 	private void loadCustomFonts() {
@@ -56,6 +55,11 @@ public class MainApplication extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+
+		if (primaryStage != null) {
+			primaryStage.close();
+		}
+
 		loadCustomFonts();
 		initializeUI(primaryStage);
 		attachEventHandlers();
