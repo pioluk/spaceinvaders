@@ -46,7 +46,7 @@ public class PlayerControllerTest {
 	@Test
 	public void shouldNotAllowPlayerToExceedRightWindowBound() {
 		for (int i = 0; i < 100; ++i) {
-			playerController.moveLeft();
+			playerController.moveRight();
 		}
 
 		assertThat(player.getX()).isLessThanOrEqualTo(Config.WINDOW_WIDTH - Config.PLAYER_WIDTH);
