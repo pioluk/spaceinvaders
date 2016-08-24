@@ -14,224 +14,215 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by Arie on 13.08.2016.
- */
 public class BoardControllerTest {
 
-    private Board board;
-    private BoardController boardController;
+	private Board board;
+	private BoardController boardController;
 
-    @Before
-    public void init() {
-        Game game = new Game();
-        board = BoardFactory.create(game.getLevel());
-        board.setPlayer(new Player());
-        boardController = new BoardController(board);
-    }
+	@Before
+	public void init() {
+		Game game = new Game();
+		board = BoardFactory.create(game.getLevel());
+		board.setPlayer(new Player());
+		boardController = new BoardController(board);
+	}
 
-    @Test
-    public void movePlayerLeft() {
-        double xPosBefore = board.getPlayer().getX();
-        boardController.movePlayerLeft();
-        double xPosAfter = board.getPlayer().getX();
-        assertThat(xPosAfter,equalTo(xPosBefore - Config.SINGLE_MOVE_DISTANCE_FOR_PLAYER));
-    }
+	@Test
+	public void movePlayerLeft() {
+		double xPosBefore = board.getPlayer().getX();
+		boardController.movePlayerLeft();
+		double xPosAfter = board.getPlayer().getX();
+		assertThat(xPosAfter, equalTo(xPosBefore - Config.SINGLE_MOVE_DISTANCE_FOR_PLAYER));
+	}
 
-    @Test
-    public void movePlayerLeftAtLeftBorder() {
-        board.getPlayer().setX(0);
-        boardController.movePlayerLeft();
-        Double xPosAfter = board.getPlayer().getX();
-        assertThat(xPosAfter,equalTo(0.0));
-    }
+	@Test
+	public void movePlayerLeftAtLeftBorder() {
+		board.getPlayer().setX(0);
+		boardController.movePlayerLeft();
+		Double xPosAfter = board.getPlayer().getX();
+		assertThat(xPosAfter, equalTo(0.0));
+	}
 
-    @Test
-    public void movePlayerLeftAtOuside() {
-        board.getPlayer().setX(-20);
-        boardController.movePlayerLeft();
-        Double xPosAfter = board.getPlayer().getX();
-        assertThat(xPosAfter,equalTo(0.0));
-    }
+	@Test
+	public void movePlayerLeftAtOuside() {
+		board.getPlayer().setX(-20);
+		boardController.movePlayerLeft();
+		Double xPosAfter = board.getPlayer().getX();
+		assertThat(xPosAfter, equalTo(0.0));
+	}
 
-    @Test
-    public void movePlayerRight() {
-        double xPosBefore = board.getPlayer().getX();
-        boardController.movePlayerRight();
-        Double xPosAfter = board.getPlayer().getX();
-        assertThat(xPosAfter,equalTo(xPosBefore + Config.SINGLE_MOVE_DISTANCE_FOR_PLAYER));
-    }
+	@Test
+	public void movePlayerRight() {
+		double xPosBefore = board.getPlayer().getX();
+		boardController.movePlayerRight();
+		Double xPosAfter = board.getPlayer().getX();
+		assertThat(xPosAfter, equalTo(xPosBefore + Config.SINGLE_MOVE_DISTANCE_FOR_PLAYER));
+	}
 
-    @Test
-    public void movePlayerRightAtRightBorder() {
-        board.getPlayer().setX(Config.WINDOW_WIDTH);
-        boardController.movePlayerRight();
-        Double xPosAfter = board.getPlayer().getX();
-        assertThat(xPosAfter,equalTo(Config.WINDOW_WIDTH - Config.PLAYER_WIDTH));
-    }
+	@Test
+	public void movePlayerRightAtRightBorder() {
+		board.getPlayer().setX(Config.WINDOW_WIDTH);
+		boardController.movePlayerRight();
+		Double xPosAfter = board.getPlayer().getX();
+		assertThat(xPosAfter, equalTo(Config.WINDOW_WIDTH - Config.PLAYER_WIDTH));
+	}
 
-    @Test
-    public void movePlayerRightAtOutside() {
-        board.getPlayer().setX(Config.WINDOW_WIDTH+200);
-        boardController.movePlayerRight();
-        Double xPosAfter = board.getPlayer().getX();
-        assertThat(xPosAfter,equalTo(Config.WINDOW_WIDTH - Config.PLAYER_WIDTH));
-    }
+	@Test
+	public void movePlayerRightAtOutside() {
+		board.getPlayer().setX(Config.WINDOW_WIDTH + 200);
+		boardController.movePlayerRight();
+		Double xPosAfter = board.getPlayer().getX();
+		assertThat(xPosAfter, equalTo(Config.WINDOW_WIDTH - Config.PLAYER_WIDTH));
+	}
 
-    @Test
-    public void fireProjectileTest() {
+	@Test
+	public void fireProjectileTest() {
+		double projectileX = board.getPlayer().getX() + Config.PLAYER_WIDTH / 2.0 - Config.PROJECTILE_WIDTH / 2.0;
+		double projectileY = board.getPlayer().getY() - Config.PROJECTILE_HEIGHT;
+		int projectiveCountBefore = board.getProjectiles().size();
 
-        double projectileX = board.getPlayer().getX() + Config.PLAYER_WIDTH / 2.0 - Config.PROJECTILE_WIDTH / 2.0;
-        double projectileY = board.getPlayer().getY() - Config.PROJECTILE_HEIGHT;
-        int projectiveCountBefore = board.getProjectiles().size();
+		boardController.fireProjectile();
 
-        boardController.fireProjectile();
+		Projectile projectile = board.getProjectiles().get(board.getProjectiles().size() - 1);
 
-        Projectile projectile = board.getProjectiles().get(board.getProjectiles().size()-1);
+		assertThat(projectileX, equalTo(projectile.getX()));
+		assertThat(projectileY, equalTo(projectile.getY()));
+		assertThat(board.getProjectiles().size(), equalTo(++projectiveCountBefore));
 
-        assertThat(projectileX,equalTo(projectile.getX()));
-        assertThat(projectileY,equalTo(projectile.getY()));
-        assertThat(board.getProjectiles().size(),equalTo(++projectiveCountBefore));
+	}
 
-    }
+	private void waitForThread() throws InterruptedException {
+		Semaphore semaphore = new Semaphore(0);
+		Platform.runLater(() -> semaphore.release());
+		semaphore.acquire();
+	}
 
-    private void waitForThread() throws InterruptedException {
-        Semaphore semaphore = new Semaphore(0);
-        Platform.runLater(() -> semaphore.release());
-        semaphore.acquire();
-    }
+	@Test
+	public void advanceProjecties() throws InterruptedException {
+		Projectile projectile1 = new Projectile();
+		Projectile projectile2 = new Projectile();
+		Projectile projectile3 = new Projectile();
 
-    @Test
-    public void advanceProjecties() throws InterruptedException {
+		projectile1.setY(10);
+		projectile2.setY(1);
+		projectile3.setY(-1);
 
-        Projectile projectile1 = new Projectile();
-        Projectile projectile2 = new Projectile();
-        Projectile projectile3 = new Projectile();
+		board.addProjectile(projectile1);
+		board.addProjectile(projectile2);
+		board.addProjectile(projectile3);
 
-        projectile1.setY(10);
-        projectile2.setY(1);
-        projectile3.setY(-1);
+		new JFXPanel();
+		boardController.advanceProjectiles();
 
-        board.addProjectile(projectile1);
-        board.addProjectile(projectile2);
-        board.addProjectile(projectile3);
+		waitForThread();
 
-        new JFXPanel();
-        boardController.advanceProjectiles();
+		assertThat(board.getProjectiles().size(), equalTo(1));
+	}
 
-        waitForThread();
+	@Test
+	public void detectCollisionsTest1() throws Exception {
+		Projectile projectile = new Projectile();
+		projectile.setX(2.01);
+		projectile.setY(2.01);
 
-        assertThat(board.getProjectiles().size(),equalTo(1));
-    }
+		board.addProjectile(projectile);
 
-    @Test
-    public void detectCollisionsTest1() throws  Exception {
+		Invader invader = new Invader(1, 1);
+		invader.setX(2.0);
+		invader.setY(2.0);
+		ArrayList<Invader> invanders = new ArrayList<>();
+		invanders.add(invader);
 
-        Projectile projectile = new Projectile();
-        projectile.setX(2.01);
-        projectile.setY(2.01);
+		new JFXPanel();
 
-        board.addProjectile(projectile);
+		board.setInvaders(invanders);
 
-        Invader invader = new Invader(1,1);
-        invader.setX(2.0);
-        invader.setY(2.0);
-        ArrayList<Invader> invanders = new ArrayList<>();
-        invanders.add(invader);
+		boardController.detectCollisions();
+		waitForThread();
 
-        new JFXPanel();
+		assertTrue(board.getProjectiles().isEmpty());
+	}
 
-        board.setInvaders(invanders);
+	@Test
+	public void detectCollisionsTest2() throws Exception {
+		Projectile projectile = new Projectile();
 
-        boardController.detectCollisions();
-        waitForThread();
+		projectile.setX(1.0);
+		projectile.setY(1.0);
+		board.getProjectiles().clear();
+		board.addProjectile(projectile);
 
-        assertTrue(board.getProjectiles().isEmpty());
-    }
+		Invader invader = new Invader(1, 1);
+		invader.setX(2.0);
+		invader.setY(2.0);
+		ArrayList<Invader> invanders = new ArrayList<>();
+		invanders.add(invader);
 
-    @Test
-    public void detectCollisionsTest2() throws  Exception {
+		new JFXPanel();
 
-        Projectile projectile = new Projectile();
+		board.setInvaders(invanders);
 
-        projectile.setX(1.0);
-        projectile.setY(1.0);
-        board.getProjectiles().clear();
-        board.addProjectile(projectile);
+		boardController.detectCollisions();
+		waitForThread();
 
-        Invader invader = new Invader(1,1);
-        invader.setX(2.0);
-        invader.setY(2.0);
-        ArrayList<Invader> invanders = new ArrayList<>();
-        invanders.add(invader);
+		assertThat(board.getProjectiles().size(), equalTo(1));
+	}
 
-        new JFXPanel();
+	@Test
+	public void removeDeadInvadersTest() {
+		ArrayList<Invader> invanders = new ArrayList<>();
+		for (int i = 0; i < 10; i++) {
+			invanders.add(new Invader(1, 0));
+		}
 
-        board.setInvaders(invanders);
+		invanders.get(1).decreaseHP();
+		invanders.get(6).decreaseHP();
+		invanders.get(7).decreaseHP();
+		invanders.get(7).decreaseHP();
 
-        boardController.detectCollisions();
-        waitForThread();
+		board.setInvaders(invanders);
+		boardController.removeDeadInvaders();
 
+		assertThat(board.getInvaders().size(), equalTo(7));
+	}
 
-        assertThat(board.getProjectiles().size(),equalTo(1));
-    }
+	@Test
+	public void forEachDeadInvader() {
+		ArrayList<Invader> invanders = new ArrayList<>();
 
-    @Test
-    public void removeDeadInvadersTest() {
+		for (int i = 0; i < 10; i++) {
+			invanders.add(new Invader(1, 1));
+		}
 
-        ArrayList<Invader> invanders = new ArrayList<>();
-        for(int i =0; i<10; i++) {
-            invanders.add(new Invader(1,0));
-        }
+		invanders.get(1).decreaseHP();
+		invanders.get(6).decreaseHP();
+		invanders.get(7).decreaseHP();
+		invanders.get(7).decreaseHP();
 
-        invanders.get(1).decreaseHP();
-        invanders.get(6).decreaseHP();
-        invanders.get(7).decreaseHP();
-        invanders.get(7).decreaseHP();
+		board.setInvaders(invanders);
 
-        board.setInvaders(invanders);
-        boardController.removeDeadInvaders();
+		Game game = new Game();
+		GameController gameController = new GameController(game);
+		boardController.forEachDeadInvader(p -> gameController.addToScore(p));
 
-        assertThat(board.getInvaders().size(),equalTo(7));
-    }
+		assertThat(game.getScore(), equalTo(3));
+	}
 
-    @Test
-    public void forEachDeadInvader() {
-        ArrayList<Invader> invanders = new ArrayList<>();
+	@Test
+	public void forEachDeadInvaderWithoutDeadInvader() {
+		ArrayList<Invader> invanders = new ArrayList<>();
 
-        for(int i =0; i<10; i++) {
-            invanders.add(new Invader(1,1));
-        }
+		for (int i = 0; i < 10; i++) {
+			invanders.add(new Invader(1, 1));
+		}
 
-        invanders.get(1).decreaseHP();
-        invanders.get(6).decreaseHP();
-        invanders.get(7).decreaseHP();
-        invanders.get(7).decreaseHP();
+		board.setInvaders(invanders);
 
-        board.setInvaders(invanders);
+		Game game = new Game();
+		GameController gameController = new GameController(game);
+		boardController.forEachDeadInvader(p -> gameController.addToScore(p));
 
-        Game game = new Game();
-        GameController gc = new GameController(game);
-        boardController.forEachDeadInvader(p -> gc.addToScore(p));
-
-        assertThat(game.getScore(),equalTo(3));
-    }
-
-    @Test
-    public void forEachDeadInvaderWithoutDeadInvader() {
-        ArrayList<Invader> invanders = new ArrayList<>();
-
-        for(int i =0; i<10; i++) {
-            invanders.add(new Invader(1,1));
-        }
-
-        board.setInvaders(invanders);
-
-        Game game = new Game();
-        GameController gc = new GameController(game);
-        boardController.forEachDeadInvader(p -> gc.addToScore(p));
-
-        assertThat(game.getScore(),equalTo(0));
-    }
+		assertThat(game.getScore(), equalTo(0));
+	}
 }
 

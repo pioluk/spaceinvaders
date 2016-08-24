@@ -20,96 +20,85 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by Arie on 13.08.2016.
- */
 public class DaoTest {
 
+	DataSource mockDataSource;
+	Connection mockConn;
+	Statement mockStatement;
+	ResultSet mockResultSet;
 
-    DataSource mockDataSource;
-    Connection mockConn;
-    Statement mockStatement;
-    ResultSet mockResultSet;
+	@Before
+	public void init() {
+		mockDataSource = mock(DataSource.class);
+		mockConn = mock(Connection.class);
+		mockStatement = mock(Statement.class);
+		mockResultSet = mock(ResultSet.class);
+	}
 
-    @Before
-    public void init() {
-        mockDataSource = mock(DataSource.class);
-        mockConn = mock(Connection.class);
-        mockStatement = mock(Statement.class);
-        mockResultSet = mock(ResultSet.class);
-    }
+	@Test
+	public void getAllTest() throws SQLException {
+		when(mockConn.createStatement()).thenReturn(mockStatement);
+		when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
+		when(mockResultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
 
+		Mockito.when(mockResultSet.getString("name")).thenReturn("Artur");
+		Mockito.when(mockResultSet.getInt("score")).thenReturn(999);
+		Mockito.when(mockResultSet.getString("finishTime")).thenReturn("2016-08-08 16:08:23");
+		Mockito.when(mockResultSet.getLong("gameDuration")).thenReturn(21L);
 
+		Score score = new Score();
+		score.name = "Artur";
+		score.finishTime = "2016-08-08 16:08:23";
+		score.gameDuration = 21;
+		score.score = 999;
 
-    @Test
-    public void getAllTest() throws SQLException  {
+		List<Score> list = new ArrayList<>();
+		list.add(score);
 
-        when(mockConn.createStatement()).thenReturn(mockStatement);
-        when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
+		ScoreDao dao = new ScoreDaoImpl(mockConn);
+		List<Score> scoreList = dao.findAll();
 
-        Mockito.when(mockResultSet.getString("name")).thenReturn("Artur");
-        Mockito.when(mockResultSet.getInt("score")).thenReturn(999);
-        Mockito.when(mockResultSet.getString("finishTime")).thenReturn("2016-08-08 16:08:23");
-        Mockito.when(mockResultSet.getLong("gameDuration")).thenReturn(21L);
+		for (int i = 0; i < scoreList.size(); i++) {
+			assertEquals(scoreList.get(i).name, list.get(i).name);
+			assertEquals(scoreList.get(i).score, list.get(i).score);
+			assertEquals(scoreList.get(i).gameDuration, list.get(i).gameDuration);
+			assertEquals(scoreList.get(i).finishTime, list.get(i).finishTime);
+		}
+	}
 
-        Score score = new Score();
-        score.name = "Artur";
-        score.finishTime = "2016-08-08 16:08:23";
-        score.gameDuration = 21;
-        score.score = 999;
+	@Test
+	public void saveTest() throws SQLException, ClassNotFoundException {
+		when(mockConn.createStatement()).thenReturn(mockStatement);
+		when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
+		when(mockResultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
 
-        List<Score> list = new ArrayList<>();
-        list.add(score);
+		ScoreDao dao = new ScoreDaoImpl(mockConn);
 
-        ScoreDao dao = new ScoreDaoImpl(mockConn);
-        List<Score> scoreList = dao.findAll();
+		Score score = new Score();
+		score.name = "Artur";
+		score.finishTime = "2016-08-08 16:08:23";
+		score.gameDuration = 21;
+		score.score = 999;
 
-        for(int i =0; i<scoreList.size(); i++)
-        {
-            assertEquals(scoreList.get(i).name,list.get(i).name);
-            assertEquals(scoreList.get(i).score,list.get(i).score);
-            assertEquals(scoreList.get(i).gameDuration,list.get(i).gameDuration);
-            assertEquals(scoreList.get(i).finishTime,list.get(i).finishTime);
-        }
-    }
+		dao.save(score);
 
-    @Test
-    public void saveTest() throws SQLException, ClassNotFoundException {
-        when(mockConn.createStatement()).thenReturn(mockStatement);
-        when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
+		List<Score> scores = new ArrayList<>();
 
-        ScoreDao dao = new ScoreDaoImpl(mockConn);
+		while (mockResultSet.next()) {
+			Score scoreTemp = new Score();
+			scoreTemp.setName(mockResultSet.getString("name"));
+			scoreTemp.setScore(mockResultSet.getInt("score"));
+			scoreTemp.setFinishTime(mockResultSet.getString("finishTime"));
+			scoreTemp.setGameDuration(mockResultSet.getLong("gameDuration"));
 
-        Score score = new Score();
-        score.name = "Artur";
-        score.finishTime = "2016-08-08 16:08:23";
-        score.gameDuration = 21;
-        score.score = 999;
+			scores.add(score);
+		}
 
-        dao.save(score);
-
-        List<Score> scores = new ArrayList<>();
-
-        while (mockResultSet.next()) {
-            Score scoreTemp = new Score();
-            scoreTemp.setName(mockResultSet.getString("name"));
-            scoreTemp.setScore(mockResultSet.getInt("score"));
-            scoreTemp.setFinishTime(mockResultSet.getString("finishTime"));
-            scoreTemp.setGameDuration(mockResultSet.getLong("gameDuration"));
-
-            scores.add(score);
-        }
-
-        assertThat(score.getName(),equalTo(scores.get(0).getName()));
-        assertThat(score.getFinishTime(),equalTo(scores.get(0).getFinishTime()));
-        assertThat(score.getGameDuration(),equalTo(scores.get(0).getGameDuration()));
-        assertThat(score.getScore(),equalTo(scores.get(0).getScore()));
-    }
-
-
-
+		assertThat(score.getName(), equalTo(scores.get(0).getName()));
+		assertThat(score.getFinishTime(), equalTo(scores.get(0).getFinishTime()));
+		assertThat(score.getGameDuration(), equalTo(scores.get(0).getGameDuration()));
+		assertThat(score.getScore(), equalTo(scores.get(0).getScore()));
+	}
 
 }
 
