@@ -7,18 +7,19 @@ import static junit.framework.TestCase.assertTrue;
 public class BoardFactoryTest {
 
 	@Test
-	public void FactoryTestLevel1() {
+	public void shouldCreateLevel1Board() {
 		Board level1 = BoardFactory.create(1);
 		assertTrue(level1 instanceof Level1Board);
 	}
 
-	public void FactoryTestLevel2() {
-		Board level2 = BoardFactory.create(1);
+	@Test
+	public void shouldCreateLevel2Board() {
+		Board level2 = BoardFactory.create(2);
 		assertTrue(level2 instanceof Level2Board);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void FacoryTestException() throws Exception {
+	public void shouldFailToCreateBoardAboveLevelCap() throws Exception {
 		Board level10 = BoardFactory.create(10);
 	}
 
