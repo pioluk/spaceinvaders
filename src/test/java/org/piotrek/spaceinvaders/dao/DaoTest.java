@@ -36,7 +36,7 @@ public class DaoTest {
 	}
 
 	@Test
-	public void getAllTest() throws SQLException {
+	public void shouldRetrieveAllData() throws SQLException {
 		when(mockConn.createStatement()).thenReturn(mockStatement);
 		when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
 		when(mockResultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
@@ -67,7 +67,7 @@ public class DaoTest {
 	}
 
 	@Test
-	public void saveTest() throws SQLException, ClassNotFoundException {
+	public void shouldSaveData() throws SQLException, ClassNotFoundException {
 		when(mockConn.createStatement()).thenReturn(mockStatement);
 		when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
 		when(mockResultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
