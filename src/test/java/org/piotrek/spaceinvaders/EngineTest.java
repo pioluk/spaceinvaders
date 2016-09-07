@@ -1,4 +1,4 @@
-package org.piotrek.spaceinvaders.view;
+package org.piotrek.spaceinvaders;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -12,6 +12,7 @@ import org.piotrek.spaceinvaders.Engine;
 import org.piotrek.spaceinvaders.MainApplication;
 import org.piotrek.spaceinvaders.controller.PlayerController;
 import org.piotrek.spaceinvaders.model.Player;
+import org.piotrek.spaceinvaders.view.*;
 
 import static org.mockito.Mockito.*;
 
