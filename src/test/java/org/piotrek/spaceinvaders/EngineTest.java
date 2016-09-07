@@ -23,7 +23,6 @@ public class EngineTest {
 	private GraphicsContext graphicsContext;
 	private static Thread thread;
 
-
 	@BeforeClass
 	public static void initialize() throws InterruptedException {
 		sut = new Engine();
@@ -147,8 +146,6 @@ public class EngineTest {
 	public void shouldNotAllowToMovePlayerWhenGameIsPaused() {
 		sut.startGame();
 		sut.togglePaused();
-
-		Player player = new Player();
 
 		PlayerController playerControllerMock = mock(PlayerController.class);
 		sut.setPlayerController(playerControllerMock);
