@@ -111,14 +111,29 @@ public class BoardControllerTest {
 	}
 
 	@Test
-	public void advanceProjecties() throws InterruptedException {
+	public void shouldAdvanceProjectiles() {
+		Projectile projectile = new Projectile();
+
+		double initialPosition = 100d;
+
+		projectile.setY(initialPosition);
+
+		board.addProjectile(projectile);
+
+		boardController.advanceProjectiles();
+
+		assertThat(projectile.getY(), equalTo(initialPosition - Config.PROJECTILE_ADVANCE_STEP));
+	}
+
+	@Test
+	public void shouldRemoveOffscreenProjectiles() throws InterruptedException {
 		Projectile projectile1 = new Projectile();
 		Projectile projectile2 = new Projectile();
 		Projectile projectile3 = new Projectile();
 
-		projectile1.setY(10);
-		projectile2.setY(1);
-		projectile3.setY(-1);
+		projectile1.setY(10d);
+		projectile2.setY(1d);
+		projectile3.setY(-1d);
 
 		board.addProjectile(projectile1);
 		board.addProjectile(projectile2);
@@ -133,7 +148,7 @@ public class BoardControllerTest {
 	}
 
 	@Test
-	public void detectCollisionsTest1() throws Exception {
+	public void shouldDetectCollisions1() throws Exception {
 		Projectile projectile = new Projectile();
 		projectile.setX(2.01);
 		projectile.setY(2.01);
@@ -143,7 +158,7 @@ public class BoardControllerTest {
 		Invader invader = new Invader(1, 1);
 		invader.setX(2.0);
 		invader.setY(2.0);
-		ArrayList<Invader> invanders = new ArrayList<>();
+		List<Invader> invanders = new ArrayList<>();
 		invanders.add(invader);
 
 		new JFXPanel();
@@ -157,7 +172,7 @@ public class BoardControllerTest {
 	}
 
 	@Test
-	public void detectCollisionsTest2() throws Exception {
+	public void shouldDetectCollisions2() throws Exception {
 		Projectile projectile = new Projectile();
 
 		projectile.setX(1.0);
@@ -182,7 +197,7 @@ public class BoardControllerTest {
 	}
 
 	@Test
-	public void removeDeadInvadersTest() {
+	public void shouldRemoveDeadInvaders() {
 		ArrayList<Invader> invanders = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
 			invanders.add(new Invader(1, 0));
@@ -197,45 +212,6 @@ public class BoardControllerTest {
 		boardController.removeDeadInvaders();
 
 		assertThat(board.getInvaders().size(), equalTo(7));
-	}
-
-	@Test
-	public void forEachDeadInvader() {
-		ArrayList<Invader> invanders = new ArrayList<>();
-
-		for (int i = 0; i < 10; i++) {
-			invanders.add(new Invader(1, 1));
-		}
-
-		invanders.get(1).decreaseHP();
-		invanders.get(6).decreaseHP();
-		invanders.get(7).decreaseHP();
-		invanders.get(7).decreaseHP();
-
-		board.setInvaders(invanders);
-
-		Game game = new Game();
-		GameController gameController = new GameController(game);
-		boardController.forEachDeadInvader(p -> gameController.addToScore(p));
-
-		assertThat(game.getScore(), equalTo(3));
-	}
-
-	@Test
-	public void forEachDeadInvaderWithoutDeadInvader() {
-		ArrayList<Invader> invanders = new ArrayList<>();
-
-		for (int i = 0; i < 10; i++) {
-			invanders.add(new Invader(1, 1));
-		}
-
-		board.setInvaders(invanders);
-
-		Game game = new Game();
-		GameController gameController = new GameController(game);
-		boardController.forEachDeadInvader(p -> gameController.addToScore(p));
-
-		assertThat(game.getScore(), equalTo(0));
 	}
 }
 
