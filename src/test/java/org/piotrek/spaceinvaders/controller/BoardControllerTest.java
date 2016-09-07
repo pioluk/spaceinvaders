@@ -8,6 +8,7 @@ import org.piotrek.spaceinvaders.Config;
 import org.piotrek.spaceinvaders.model.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -28,7 +29,7 @@ public class BoardControllerTest {
 	}
 
 	@Test
-	public void movePlayerLeft() {
+	public void shouldMovePlayerLeft() {
 		double xPosBefore = board.getPlayer().getX();
 		boardController.movePlayerLeft();
 		double xPosAfter = board.getPlayer().getX();
@@ -36,7 +37,7 @@ public class BoardControllerTest {
 	}
 
 	@Test
-	public void movePlayerLeftAtLeftBorder() {
+	public void shouldmovePlayerLeftAtLeftBorder() {
 		board.getPlayer().setX(0);
 		boardController.movePlayerLeft();
 		Double xPosAfter = board.getPlayer().getX();
@@ -44,7 +45,7 @@ public class BoardControllerTest {
 	}
 
 	@Test
-	public void movePlayerLeftAtOuside() {
+	public void shouldMovePlayerLeftAtOuside() {
 		board.getPlayer().setX(-20);
 		boardController.movePlayerLeft();
 		Double xPosAfter = board.getPlayer().getX();
@@ -52,7 +53,7 @@ public class BoardControllerTest {
 	}
 
 	@Test
-	public void movePlayerRight() {
+	public void shouldMovePlayerRight() {
 		double xPosBefore = board.getPlayer().getX();
 		boardController.movePlayerRight();
 		Double xPosAfter = board.getPlayer().getX();
@@ -60,7 +61,7 @@ public class BoardControllerTest {
 	}
 
 	@Test
-	public void movePlayerRightAtRightBorder() {
+	public void shouldMovePlayerRightAtRightBorder() {
 		board.getPlayer().setX(Config.WINDOW_WIDTH);
 		boardController.movePlayerRight();
 		Double xPosAfter = board.getPlayer().getX();
@@ -68,7 +69,7 @@ public class BoardControllerTest {
 	}
 
 	@Test
-	public void movePlayerRightAtOutside() {
+	public void shouldMovePlayerRightAtOutside() {
 		board.getPlayer().setX(Config.WINDOW_WIDTH + 200);
 		boardController.movePlayerRight();
 		Double xPosAfter = board.getPlayer().getX();
@@ -88,7 +89,6 @@ public class BoardControllerTest {
 		assertThat(projectileX, equalTo(projectile.getX()));
 		assertThat(projectileY, equalTo(projectile.getY()));
 		assertThat(board.getProjectiles().size(), equalTo(++projectiveCountBefore));
-
 	}
 
 	private void waitForThread() throws InterruptedException {
