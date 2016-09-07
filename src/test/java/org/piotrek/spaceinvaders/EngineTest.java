@@ -1,17 +1,12 @@
 package org.piotrek.spaceinvaders;
 
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.piotrek.spaceinvaders.Config;
-import org.piotrek.spaceinvaders.Engine;
-import org.piotrek.spaceinvaders.MainApplication;
 import org.piotrek.spaceinvaders.controller.PlayerController;
-import org.piotrek.spaceinvaders.model.Player;
 import org.piotrek.spaceinvaders.view.*;
 
 import static org.mockito.Mockito.*;
@@ -19,8 +14,6 @@ import static org.mockito.Mockito.*;
 public class EngineTest {
 
 	private static Engine sut;
-	private Scene scene;
-	private GraphicsContext graphicsContext;
 	private static Thread thread;
 
 	@BeforeClass
