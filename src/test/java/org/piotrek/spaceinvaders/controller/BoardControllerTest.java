@@ -77,18 +77,31 @@ public class BoardControllerTest {
 	}
 
 	@Test
-	public void fireProjectileTest() {
-		double projectileX = board.getPlayer().getX() + Config.PLAYER_WIDTH / 2.0 - Config.PROJECTILE_WIDTH / 2.0;
-		double projectileY = board.getPlayer().getY() - Config.PROJECTILE_HEIGHT;
-		int projectiveCountBefore = board.getProjectiles().size();
+	public void shouldFireNewProjectile() {
+		List<Projectile> projectiles = board.getProjectiles();
+
+		int numberOfProjectilesBeforeFiring = projectiles.size();
 
 		boardController.fireProjectile();
 
-		Projectile projectile = board.getProjectiles().get(board.getProjectiles().size() - 1);
+		int numberOfProjectilesAfterFiring = projectiles.size();
 
-		assertThat(projectileX, equalTo(projectile.getX()));
-		assertThat(projectileY, equalTo(projectile.getY()));
-		assertThat(board.getProjectiles().size(), equalTo(++projectiveCountBefore));
+		assertThat(numberOfProjectilesBeforeFiring, equalTo(numberOfProjectilesAfterFiring - 1));
+	}
+
+	@Test
+	public void shouldFireProjectileAtCorrectCoordinates() {
+		Player player = board.getPlayer();
+		double projectileX = player.getX() + Config.PLAYER_WIDTH / 2.0 - Config.PROJECTILE_WIDTH / 2.0;
+		double projectileY = player.getY() - Config.PROJECTILE_HEIGHT;
+
+		boardController.fireProjectile();
+
+		List<Projectile> projectiles = board.getProjectiles();
+		Projectile lastProjectile = projectiles.get(projectiles.size() - 1);
+
+		assertThat(projectileX, equalTo(lastProjectile.getX()));
+		assertThat(projectileY, equalTo(lastProjectile.getY()));
 	}
 
 	private void waitForThread() throws InterruptedException {
