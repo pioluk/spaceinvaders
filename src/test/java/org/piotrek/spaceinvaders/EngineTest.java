@@ -20,14 +20,14 @@ public class EngineTest {
 	public static void initialize() throws InterruptedException {
 		sut = new Engine();
 
-		thread = new Thread("JavaFX Init Thread") {
-			public void run() {
-				Application.launch(MainApplication.class, new String[0]);
-			}
-		};
-		thread.setDaemon(true);
-		thread.start();
-		System.out.printf("FX App thread started\n");
+//		thread = new Thread("JavaFX Init Thread") {
+//			public void run() {
+//				Application.launch(MainApplication.class, new String[0]);
+//			}
+//		};
+//		thread.setDaemon(true);
+//		thread.start();
+//		System.out.printf("FX App thread started\n");
 		Thread.sleep(500);
 	}
 
