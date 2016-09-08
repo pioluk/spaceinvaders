@@ -5,8 +5,6 @@ import org.piotrek.spaceinvaders.model.Board;
 
 public class BoardView implements View {
 
-	private Board board;
-
 	private PlayerView playerView;
 	private InvadersView invadersView;
 	private ProjectilesView projectilesView;
@@ -16,7 +14,6 @@ public class BoardView implements View {
 	}
 
 	public void setBoard(Board board) {
-		this.board = board;
 		this.playerView = new PlayerView(board.getPlayer());
 		this.invadersView = new InvadersView(board.getInvaders());
 		this.projectilesView = new ProjectilesView(board.getProjectiles());

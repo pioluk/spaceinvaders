@@ -52,8 +52,6 @@ public class ScoreDaoImpl implements ScoreDao {
 			score.getGameDuration() +
 			")";
 
-		System.out.println(sql);
-
 		statement.executeUpdate(sql);
 		statement.close();
 	}
